@@ -9,7 +9,7 @@ pos.addEventListener('mousemove', (e) => {
   <div
     class="w-[100vw] h-[100vh] relative bg-black flex justify-center items-center"
   >
-    <div class="text-white text-[12em] cursor-default">KFC疯狂星期四</div>
+    <div class="text-white text-[12em] cursor-default">KFC疯狂星期四!</div>
     <div class="light"></div>
   </div>
 </template>
