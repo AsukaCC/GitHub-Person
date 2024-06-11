@@ -1,20 +1,20 @@
-name: Deploy to GitHub Pages
+name: GitHub Pages
 
 on:
   push:
     branches:
-      - main
+      - main # Set a branch name to trigger deployment
+  pull_request:
 
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
-
+    permissions:
+      contents: write
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
+      - uses: actions/setup-node@v3
         with:
           node-version: '20'
 
@@ -24,12 +24,8 @@ jobs:
       - name: Build project
         run: yarn build
 
-      - name: Deploy to GitHub Pages
-        env:
-          ACTIONS_DEPLOY_KEY: ${{ secrets.ACTIONS_DEPLOY_KEY }}
-        run: |
-          mkdir -p ~/.ssh
-          echo "${ACTIONS_DEPLOY_KEY}" > ~/.ssh/gh-pages
-          chmod 600 ~/.ssh/gh-pages
-          ssh-keyscan github.com >> ~/.ssh/known_hosts
-          GIT_SSH_COMMAND="ssh -i ~/.ssh/gh-pages" git push origin gh-pages
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          deploy_key: ${{ secrets.ACTIONS_DEPLOY_KEY }}
+          publish_dir: ./public
