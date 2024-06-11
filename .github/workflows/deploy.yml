@@ -1,4 +1,4 @@
-name: GitHub Pages
+name: Deploy to GitHub Pages
 
 on:
   push:
@@ -14,7 +14,11 @@ jobs:
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}
     steps:
-      - uses: actions/setup-node@v3
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
         with:
           node-version: '20'
 
@@ -28,4 +32,4 @@ jobs:
         uses: peaceiris/actions-gh-pages@v4
         with:
           deploy_key: ${{ secrets.ACTIONS_DEPLOY_KEY }}
-          publish_dir: ./dist
+          publish_dir: ./dist # 确保这是构建输出目录
