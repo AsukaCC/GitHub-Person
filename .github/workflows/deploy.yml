@@ -46,4 +46,4 @@ jobs:
       - name: Deploy to GitHub Pages
         uses: actions/deploy-pages@v4
         with:
-          folder: ./dist # 确保这是构建输出目录
+          artifact_name: build-artifact # 使用上传时的工件名称
