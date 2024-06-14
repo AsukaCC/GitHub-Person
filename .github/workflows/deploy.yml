@@ -1,49 +1,31 @@
-name: Deploy to GitHub Pages
+name: Deploy Vue.js App to GitHub Pages
 
 on:
   push:
     branches:
-      - main # Set a branch name to trigger deployment
-  pull_request:
+      - main # 触发工作流的分支名称
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v2
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
         with:
           node-version: '20'
 
       - name: Install dependencies
-        run: yarn install
+        run: npm install
 
-      - name: Build project
-        run: yarn build
-
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: build-artifact
-          path: ./dist # 确保这是构建输出目录
-
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    permissions:
-      pages: write
-      id-token: write
-    steps:
-      - name: Download artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: build-artifact
-          path: ./dist
+      - name: Build the project
+        run: npm run build
 
       - name: Deploy to GitHub Pages
-        uses: actions/deploy-pages@v4
+        uses: peaceiris/actions-gh-pages@v3
         with:
-          artifact_name: build-artifact # 使用上传时的工件名称
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist
